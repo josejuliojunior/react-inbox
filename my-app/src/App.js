@@ -2,64 +2,82 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-// class App extends Component {
-//   render() {
-//     return (
-//       <div className="App">
-//         <div className="App-header">
-//           <img src={logo} className="App-logo" alt="logo" />
-//           <h2>Welcome to React</h2>
-//         </div>
-//         <p className="App-intro">
-//           To get started, edit <code>src/App.js</code> and save to reload.
-//         </p>
-//       </div>
-//     );
-//   }
-// }
-//
-// export default App;
+import Toolbar from './components/Toolbar';
+import MessageList from './components/MessageList';
+import data from './data/messages';
 
-export default class menu extends React.Component {
+
+
+export default class Menu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {messages: data};
+  }
+
+  toggleStar (message) {
+    this.setState((prevState) => {
+      let current = prevState.messages.indexOf(message);
+      prevState.messages[current].starred ?
+      prevState.messages[current].starred = false :
+      prevState.messages[current].starred = true
+    })
+  }
+
+  toggleSelect (message) {
+    this.setState((prevState) => {
+      let current = prevState.messages.indexOf(message);
+      prevState.messages[current].selected ?
+      prevState.messages[current].selected = false :
+      prevState.messages[current].selected = true
+    })
+  }
+
+  toggleSelectAll (selectedMessages) {
+    selectedMessages < this.state.messages.length ?
+    this.state.messages.forEach((message, i) => {
+      this.setState(prevState => {
+        prevState.messages[i].selected = true
+      })
+    }) :
+    this.state.messages.forEach((message, i) => {
+      this.setState(prevState => {
+        prevState.messages[i].selected = false
+      })
+    })
+  }
+
+  markAsRead (selectedMessages) {
+    this.state.messages.map((message, i) => message.selected ?
+      this.setState(prevState =>
+        prevState.messages[i].read = true) : null
+      )
+  }
+
+  markAsUnread (selectedMessages) {
+    this.state.messages.map((message, i) => message.selected ?
+      this.setState(prevState =>
+        prevState.messages[i].read = false) : null
+      )
+  }
+
   render () {
     return (
-      <div class="row toolbar">
-        <div class="col-md-12">
-          <p class="pull-right">
-            <span class="badge badge">2</span>
-            unread messages
-          </p>
-
-          <button class="btn btn-default">
-            <i class="fa fa-check-square-o"></i>
-          </button>
-
-          <button class="btn btn-default">
-            Mark As Read
-          </button>
-
-          <button class="btn btn-default">
-            Mark As Unread
-          </button>
-
-          <select class="form-control label-select">
-            <option>Apply label</option>
-            <option value="dev">dev</option>
-            <option value="personal">personal</option>
-            <option value="gschool">gschool</option>
-          </select>
-
-          <select class="form-control label-select">
-            <option>Remove label</option>
-            <option value="dev">dev</option>
-            <option value="personal">personal</option>
-            <option value="gschool">gschool</option>
-          </select>
-
-          <button class="btn btn-default">
-            <i class="fa fa-trash-o"></i>
-          </button>
-        </div>
+      <div className="container">
+        <header>
+          <nav>
+            <Toolbar  messages={this.state.messages}
+                      toggleSelectAll={this.toggleSelectAll.bind(this)}
+                      markAsRead={this.markAsRead.bind(this)}
+                      markAsUnread={this.markAsUnread.bind(this)}
+                      />
+          </nav>
+        </header>
+        <main>
+          <MessageList    messages={this.state.messages}
+                          toggleStar={this.toggleStar.bind(this)}
+                          toggleSelect={this.toggleSelect.bind(this)}
+                        />
+        </main>
       </div>
     )
   }
