@@ -1,7 +1,7 @@
 import React from 'react';
 import '../index.css';
 
-const Toolbar = ({messages, toggleSelectAll, markAsRead, markAsUnread}) => {
+const Toolbar = ({messages, toggleSelectAll, markAsRead, markAsUnread, deletedMessages, applyLabel, removeLabel}) => {
   const selectedMessages = messages.filter(message => message.selected).length
   const unreadMessages = messages.filter(message => message.read === false).length;
   let selectAllButton;
@@ -20,6 +20,10 @@ const Toolbar = ({messages, toggleSelectAll, markAsRead, markAsUnread}) => {
             unread messages
           </p>
 
+          <a className="btn btn-danger">
+            <i className="fa fa-plus"></i>
+          </a>
+
           <button className="btn btn-default" onClick={() => toggleSelectAll(selectedMessages)}>
             <i className={`fa ${selectAllButton}`}></i>
           </button>
@@ -32,21 +36,21 @@ const Toolbar = ({messages, toggleSelectAll, markAsRead, markAsUnread}) => {
             Mark As Unread
           </button>
 
-          <select className="form-control label-select">
+          <select className="form-control label-select" onChange={(event)=> applyLabel(event.target.value)}>
             <option>Apply label</option>
             <option value="dev">dev</option>
             <option value="personal">personal</option>
             <option value="gschool">gschool</option>
           </select>
 
-          <select className="form-control label-select">
+          <select className="form-control label-select" onChange={(event)=> removeLabel(event.target.value)}>
             <option>Remove label</option>
             <option value="dev">dev</option>
             <option value="personal">personal</option>
             <option value="gschool">gschool</option>
           </select>
 
-          <button className="btn btn-default">
+          <button className="btn btn-default" onClick={()=> deletedMessages(selectedMessages)}>
             <i className="fa fa-trash-o"></i>
           </button>
         </div>
